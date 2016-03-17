@@ -1,0 +1,9 @@
+options:
+  procs:
+    type: string
+    default: ".*"
+    description: Process regex to pass to the monitor. To disable process filtering, set ^$
+  period:
+    type: int
+    default: 10
+    description: how often in seconds to read system-wide and per-process statistics

@@ -1,0 +1,18 @@
+# This file is controlled by Juju. Hand edits will not persist!
+input:
+  period: {{ period }}
+  procs: ["{{ procs }}"]
+{% if not logstash %}
+  {% if elasticsearch %}
+output:
+  elasticsearch:
+    hosts: {{ elasticsearch }}
+    {% endif %}
+{% else %}
+output:
+  logstash:
+    hosts:
+    {% for host in logstash -%}
+      - "{{ host }}"
+    {% endfor -%}
+{% endif %}

@@ -1,0 +1,5 @@
+name: topbeat
+summary: Deploys topbeat
+maintainer: Charles Butler <charles.butler@canonical.com>
+description: |
+  Topbeat is an open source shipper for per-process CPU, memory, and disk usage metrics
