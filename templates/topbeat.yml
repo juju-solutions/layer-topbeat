@@ -16,3 +16,7 @@ output:
       - "{{ host }}"
     {% endfor -%}
 {% endif %}
+{% if principal_unit %}
+shipper:
+  name: {{ principal_unit }}
+{% endif %}
