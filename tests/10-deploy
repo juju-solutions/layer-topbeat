@@ -1,31 +1,37 @@
 #!/usr/bin/python3
 
 import amulet
-import requests
 import unittest
 
 
 class TestCharm(unittest.TestCase):
     def setUp(self):
-        self.d = amulet.Deployment()
-
+        self.d = amulet.Deployment(series='trusty')
+        self.d.add('ubuntu', 'cs:trusty/ubuntu')
+        self.d.add('elasticsearch', 'cs:trusty/elasticsearch-14')
         self.d.add('topbeat')
-        self.d.expose('topbeat')
+        self.d.relate('topbeat:beats-host', 'ubuntu:juju-info')
+        self.d.relate('topbeat:elasticsearch', 'elasticsearch:client')
 
-        self.d.setup(timeout=900)
+        self.d.setup(timeout=1200)
         self.d.sentry.wait()
 
-        self.unit = self.d.sentry['topbeat'][0]
+        self.elasticsearch = self.d.sentry['elasticsearch'][0]
+        self.topbeat = self.d.sentry['topbeat'][0]
 
-    def test_service(self):
-        # test we can access over http
-        page = requests.get('http://{}'.format(self.unit.info['public-address']))
-        self.assertEqual(page.status_code, 200)
-        # Now you can use self.d.sentry[SERVICE][UNIT] to address each of the units and perform
-        # more in-depth steps. Each self.d.sentry[SERVICE][UNIT] has the following methods:
-        # - .info - An array of the information of that unit from Juju
-        # - .file(PATH) - Get the details of a file on that unit
-        # - .file_contents(PATH) - Get plain text output of PATH file from that unit
-        # - .directory(PATH) - Get details of directory
-        # - .directory_contents(PATH) - List files and folders in PATH on that unit
-        # - .relation(relation, service:rel) - Get relation data from return service
+    def test_elasticsearch_host_in_templating(self):
+        es_address = self.elasticsearch.relation('client', 'topbeat:elasticsearch')['private-address']  # noqa
+        config = self.topbeat.file_contents('/etc/topbeat/topbeat.yml')
+        self.assertTrue(es_address in config)
+
+    def test_config_options(self):
+        self.d.configure('topbeat',
+                         {'procs': '^$',
+                          'period': '187'})
+        self.d.sentry.wait()
+        config = self.topbeat.file_contents('/etc/topbeat/topbeat.yml')
+        self.assertTrue('^$' in config)
+        self.assertTrue('187' in config)
+
+if __name__ == "__main__":
+    unittest.main()
