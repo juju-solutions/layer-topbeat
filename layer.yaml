@@ -1,1 +1,2 @@
+repo: https://github.com/juju-solutions/layer-topbeat.git
 includes: ['layer:beats-base']
