@@ -3,6 +3,7 @@ from charms.reactive import when_file_changed
 from charms.reactive import when_not
 from charms.reactive import set_state
 from charms.reactive import remove_state
+from charms.reactive import is_state
 
 from charmhelpers.core.hookenv import status_set
 from charmhelpers.core.host import service_restart
@@ -27,18 +28,14 @@ def render_topbeat_template():
     render_without_context('topbeat.yml', '/etc/topbeat/topbeat.yml')
     remove_state('beat.render')
     status_set('active', 'Topbeat ready')
+    if is_state('elasticsearch.available') or is_state('logstash.available'):
+        service_restart('topbeat')
 
 
 @when('config.changed.install_sources')
 @when('config.changed.install_keys')
 def reinstall_topbeat():
     remove_state('topbeat.installed')
-
-
-@when_file_changed('/etc/topbeat/topbeat.yml')
-def restart_topbeat():
-    ''' Anytime we touch the config file, cycle the service'''
-    service_restart('topbeat')
 
 
 @when('topbeat.installed')
@@ -48,6 +45,7 @@ def enlist_topbeat():
     set_state('topbeat.autostarted')
 
 
+@when('topbeat.installed')
 @when('elasticsearch.available')
 @when_not('topbeat.index.pushed')
 def push_topbeat_index(elasticsearch):
