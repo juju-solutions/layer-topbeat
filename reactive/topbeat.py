@@ -1,15 +1,12 @@
 from charms.reactive import when
-from charms.reactive import when_file_changed
 from charms.reactive import when_any
 from charms.reactive import when_not
 from charms.reactive import set_state
 from charms.reactive import remove_state
-from charms.reactive import is_state
 import charms.apt
 
 from charmhelpers.core.hookenv import status_set
 from charmhelpers.core.host import service_restart
-from charmhelpers.fetch import apt_install
 
 from elasticbeats import render_without_context
 from elasticbeats import enable_beat_on_boot
