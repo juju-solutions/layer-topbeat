@@ -2,6 +2,7 @@
 
 import amulet
 import unittest
+import time
 
 
 class TestCharm(unittest.TestCase):
@@ -29,6 +30,9 @@ class TestCharm(unittest.TestCase):
                          {'procs': '^$',
                           'period': '187'})
         self.d.sentry.wait()
+        # Changing the config variables just sets a "needs rendering" state.
+        # The actual file is updated later so we need to wait a bit.... :(
+        time.sleep(20)
         config = self.topbeat.file_contents('/etc/topbeat/topbeat.yml')
         self.assertTrue('^$' in config)
         self.assertTrue('187' in config)
