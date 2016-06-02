@@ -5,7 +5,7 @@ A lightweight way to gather CPU, memory, and other per-process and system wide d
 ## Usage
 
 Top can be added to any principal charm thanks to the wonders of being
-a subordinate charm. You can simply deploy the 'beats-base' bundle
+a subordinate charm. You can simply deploy the 'beats-core' bundle
 which stands up Elasticsearch, Kibana, and the three known working Beats
 subordinate services.
 
