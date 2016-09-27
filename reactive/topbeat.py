@@ -15,7 +15,7 @@ from elasticbeats import push_beat_index
 
 @when_not('apt.installed.topbeat')
 def install_topbeat():
-    status_set('maintenance', 'Installing topbeat')
+    status_set('maintenance', 'Installing topbeat.')
     charms.apt.queue_install(['topbeat'])
     set_state('topbeat.installed')
     set_state('beat.render')
@@ -26,7 +26,7 @@ def install_topbeat():
 def render_topbeat_template():
     render_without_context('topbeat.yml', '/etc/topbeat/topbeat.yml')
     remove_state('beat.render')
-    status_set('active', 'Topbeat ready')
+    status_set('active', 'Topbeat ready.')
     service_restart('topbeat')
 
 
