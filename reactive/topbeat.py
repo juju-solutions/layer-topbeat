@@ -22,7 +22,7 @@ def install_topbeat():
 
 
 @when('beat.render')
-@when_any('elasticsearch.available', 'logstash.available')
+@when_any('elasticsearch.available', 'logstash.available', 'kafka.ready')
 def render_topbeat_template():
     render_without_context('topbeat.yml', '/etc/topbeat/topbeat.yml')
     remove_state('beat.render')

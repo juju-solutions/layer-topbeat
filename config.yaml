@@ -15,3 +15,11 @@ options:
     type: int
     default: 10
     description: how often in seconds to read system-wide and per-process statistics
+  kafka_hosts:
+    type: string
+    default: ""
+    description: "A comma separated list of kafka output hosts in addition to those from relations."
+  kafka_topic:
+    type: string
+    default: "%{[type]}"
+    description: "Topic name. Format strings are allowed."
