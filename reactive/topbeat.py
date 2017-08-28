@@ -3,14 +3,17 @@ from charms.reactive import when_any
 from charms.reactive import when_not
 from charms.reactive import set_state
 from charms.reactive import remove_state
+from charms.reactive import hook
 import charms.apt
 
 from charmhelpers.core.hookenv import status_set
-from charmhelpers.core.host import service_restart
+from charmhelpers.core.host import service_restart, service_stop
 
 from elasticbeats import render_without_context
 from elasticbeats import enable_beat_on_boot
 from elasticbeats import push_beat_index
+
+import os
 
 
 @when_not('apt.installed.topbeat')
@@ -52,3 +55,13 @@ def push_topbeat_index(elasticsearch):
         host_string = "{}:{}".format(host['host'], host['port'])
     push_beat_index(host_string, 'topbeat')
     set_state('topbeat.index.pushed')
+
+
+@hook('stop')
+def remove_topbeat():
+    service_stop('topbeat')
+    try:
+        os.remove('/etc/topbeat/topbeat.yml')
+    except OSError:
+        pass
+    charms.apt.purge('topbeat')
