@@ -17,7 +17,7 @@ options:
     description: how often in seconds to read system-wide and per-process statistics
   logging_to_syslog:
     type: boolean
-    description: "Send filebeat logs to syslog https://www.elastic.co/guide/en/beats/filebeat/master/configuration-logging.html#_literal_to_syslog_literal"
+    description: "Send topbeat logs to syslog (https://www.elastic.co/guide/en/beats/topbeat/current/configuration-logging.html)"
     default: true
   logstash_hosts:
     type: string
