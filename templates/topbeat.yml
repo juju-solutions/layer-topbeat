@@ -2,34 +2,67 @@
 input:
   period: {{ period }}
   procs: ["{{ procs }}"]
-{% if not logstash %}
-  {% if elasticsearch %}
+
+logging:
+  {% if logging_to_syslog %}
+  to_syslog: true
+  {% else %}
+  to_syslog: false
+  {% endif %}
+
 output:
-  elasticsearch:
-    hosts: {{ elasticsearch }}
-    {% endif %}
-{% else %}
-output:
+{% if logstash or logstash_hosts %}
   logstash:
     hosts:
-    {% for host in logstash -%}
+      {% if logstash -%}
+      {% for host in logstash -%}
       - "{{ host }}"
-    {% endfor -%}
+      {% endfor %}
+      {%- endif %}
+      {% if logstash_hosts -%}
+      {% for host in logstash_hosts.split(',') -%}
+      - "{{ host|trim }}"
+      {% endfor %}
+      {%- endif %}
+    worker: 1
+    compression_level: 3
+    loadbalance: true
+    {% if logstash_ssl_cert and logstash_ssl_key %}
+    ssl.certificate_authorities: ["/etc/ssl/certs/topbeat-logstash.crt"]
+    ssl.certificate: "/etc/ssl/certs/topbeat-logstash.crt"
+    ssl.key: "/etc/ssl/private/topbeat-logstash.key"
+    {% endif %}
+{% endif %}
+{% if elasticsearch %}
+  elasticsearch:
+    hosts:
+      {% for host in elasticsearch -%}
+      - "{{ host }}"
+      {% endfor %}
+    worker: 1
+    max_retries: 3
+    bulk_max_size: 50
+    timeout: 30
 {% endif %}
 {% if kafka or kafka_hosts%}
   kafka:
     hosts:
+      {% if kafka %}
       {% for host in kafka -%}
       - "{{ host }}"
       {% endfor %}
+      {%- endif %}
       {%- if kafka_hosts -%}
       {% for host in kafka_hosts.split(',') -%}
       - "{{ host|trim }}"
-      {% endfor %}
-      {% endif %}
+      {% endfor -%}
+      {%- endif %}
     topic: "{{kafka_topic}}"
-{% endif %}
+    {%- if kafka_topics %}
+    topics:
+{{kafka_topics|indent(width=6, indentfirst=true)}}
+    {% endif %}
+{% endif -%}
 {% if principal_unit %}
-shipper:
-  name: {{ principal_unit }}
+name: {{ principal_unit }}
 {% endif %}

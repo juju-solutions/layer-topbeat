@@ -1,6 +1,12 @@
 name: topbeat
 summary: Deploys topbeat
-maintainer: Charles Butler <charles.butler@canonical.com>
+maintainers:
+  - Tim Van Steenburgh <tim.van.steenburgh@canonical.com>
+  - George Kraft <george.kraft@canonical.com>
+  - Rye Terrell <rye.terrell@canonical.com>
+  - Konstantinos Tsakalozos <kos.tsakalozos@canonical.com>
+  - Charles Butler <Chuck@dasroot.net>
+  - Matthew Bruzek <mbruzek@ubuntu.com>
 description: |
   Topbeat is an open source shipper for per-process CPU, memory, and disk usage metrics
 series:

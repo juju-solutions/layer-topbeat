@@ -15,6 +15,22 @@ options:
     type: int
     default: 10
     description: how often in seconds to read system-wide and per-process statistics
+  logging_to_syslog:
+    type: boolean
+    description: "Send topbeat logs to syslog (https://www.elastic.co/guide/en/beats/topbeat/current/configuration-logging.html)"
+    default: true
+  logstash_hosts:
+    type: string
+    default: ""
+    description: "A comma separated list of logstash output hosts in addition to those from relations."
+  logstash_ssl_cert:
+    type: string
+    default: ""
+    description: "Public SSL certificate data (base64 encoded) for connecting securely to logstash."
+  logstash_ssl_key:
+    type: string
+    default: ""
+    description: "Private SSL key data (base64 encoded) for connecting security to logstash."
   kafka_hosts:
     type: string
     default: ""
